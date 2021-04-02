@@ -1,0 +1,39 @@
+# Import backup granulare
+
+import-spweb -identity https://intranet.contoso.com/sites/adm/simecon -path "\\server\share\path\file.cmp"
+
+# Aggiungere "-includeusersecurity" per ripristinare anche date di salvataggio dei file e utenti
+# Aggiungere "-updateversions Ignore" per evitare di sovrascrivere i file esistenti
+
+--------------------------------------------
+
+# Spostare sito tra database (esistenti)
+
+move-spsite -identity https://intranet.contoso.com/sites/engop -destinationdatabase wss_content_intranet_operation
+
+--------------------------------------------
+
+# Lista siti in database
+
+Get-SPSite -Limit All -ContentDatabase <<databasename>>
+
+--------------------------------------------
+
+# Rinominare sito
+
+$site = Get-SPSite http://servername/customer/questions
+$site.Rename("http://servername/customer/generalquestions")
+
+--------------------------------------------
+
+# Copia sito in altro DB e/o URL
+
+Copy-SPSite http://contoso/sites/OldTeam -DestinationDatabase WSS_Content -TargetUrl http://contoso/sites/NewTeam
+
+--------------------------------------------
+
+# Esempio ricerca e ripristino della cartella OEM-Ces nel cestino di /engop
+
+$recbin = (Get-SPSite "https://intranet.contoso.com/engop").RecycleBin
+$item = $recbin | ?{$_.Title -match "OEM-Ces"}
+$recbin.Restore("$item.ID")
